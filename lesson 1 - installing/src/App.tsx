@@ -1,35 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import ListGroup from "./components/ListGroup";
+import Button from "./components/Button";
+import Alert from "./components/Alert";
+import { useState } from "react";
+
+const items = [
+  "New York",
+  "London",
+  "Tokyo",
+  "Paris",
+  "San Francisco"
+]
+
+
+const handleSelectItem = (item: string) => {
+  (item);
+  return
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [alertVisible, setAlertVisible] = useState(false);
 
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <ListGroup items={items} heading="Cities" onSelectItem={handleSelectItem} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+
+      <div>
+        <Alert>
+          Hello <b>World</b>
+        </Alert>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
+      <div>
+        {alertVisible && <Alert>This is the alert about "My Button" button!</Alert>}
+        <Button color="primary" onClick={() => { setAlertVisible(true) }}>
+          My Button
+        </Button>
+      </div>
     </>
   )
 }
 
-export default App
+export default App;
