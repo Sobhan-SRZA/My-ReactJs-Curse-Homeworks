@@ -28,10 +28,10 @@ function ListGroup({ items, heading, onSelectItem }: Probs) {
                                 : "list-group-item"
                         }
                         key={index}
-                        onClick={() => { 
+                        onClick={() => {
                             setSelectedIndex(index)
                             onSelectItem(item)
-                         }}
+                        }}
                     >
                         {item}
                     </li>
