@@ -1,4 +1,4 @@
-import {  useState } from "react"
+import { useState } from "react"
 
 export default function CalculatorApp() {
 
@@ -84,12 +84,21 @@ export default function CalculatorApp() {
                         break;
                     }
 
+                    case "−": {
+                        setMonitor2(
+                            (+number - +monitor2)
+                                .toString()
+                        )
+
+                        break;
+                    }
+
                     case "×": {
                         setMonitor2(
                             (+number * +monitor2)
                                 .toString()
                         )
-    
+
                         break;
                     }
 
@@ -98,7 +107,7 @@ export default function CalculatorApp() {
                             (+number / +monitor2)
                                 .toString()
                         )
-    
+
                         break;
                     }
                 }
@@ -155,12 +164,13 @@ export default function CalculatorApp() {
         }
 
         else {
-            if (result === monitor1.split(" ")[0]) {
+            if (result && result === monitor1.split(" ")[0]) {
                 setResult("")
                 setMonitor2(content);
             }
 
             else {
+                setResult("")
                 setMonitor2(monitor2 + content);
             }
         }
