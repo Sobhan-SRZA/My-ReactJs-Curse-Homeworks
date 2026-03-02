@@ -106,10 +106,6 @@ export default function CalculatorApp() {
     }
 
     const addContent = (content: string) => {
-        // if (!isOperator(monitor1.slice(-1)[0])) {
-        //     setMonitor1("");
-        // }
-
         if (isController(content)) {
             controllerHandle(content)
 
