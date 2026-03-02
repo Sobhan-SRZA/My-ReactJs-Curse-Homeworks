@@ -76,7 +76,7 @@ export default function CalculatorApp() {
 
                 switch (operator) {
                     case "+": {
-                        setResult(
+                        setMonitor2(
                             (+number + +monitor2)
                                 .toString()
                         )
@@ -84,19 +84,28 @@ export default function CalculatorApp() {
                         break;
                     }
 
-                    case "−": {
-                        setResult(
-                            (+number - +monitor2)
+                    case "×": {
+                        setMonitor2(
+                            (+number * +monitor2)
                                 .toString()
                         )
+    
+                        break;
+                    }
 
+                    case "÷": {
+                        setMonitor2(
+                            (+number / +monitor2)
+                                .toString()
+                        )
+    
                         break;
                     }
                 }
             }
 
             if (result)
-                setMonitor2(result)
+                setMonitor2(result);
 
             if (monitor1.slice(-1)[0] !== "=")
                 setMonitor1(monitor1 + " " + monitor2 + " =");
@@ -146,7 +155,7 @@ export default function CalculatorApp() {
         }
 
         else {
-            if (content === result) {
+            if (result === monitor1.split(" ")[0]) {
                 setResult("")
                 setMonitor2(content);
             }
@@ -230,7 +239,7 @@ export default function CalculatorApp() {
         <>
             <h1 className="text-center font-bold text-2xl">Calculator App</h1>
 
-            <section className="bg-amber-100 m-8 rounded-3xl flex flex-col p-10 gap-2 items-center">
+            <section className="bg-gray-500 shadow-inner shadow-black m-8 rounded-3xl flex flex-col p-10 gap-2 items-center">
                 {/* Monitor */}
                 <Monitor />
 
