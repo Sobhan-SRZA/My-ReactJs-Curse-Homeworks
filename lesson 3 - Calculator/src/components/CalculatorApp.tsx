@@ -83,6 +83,15 @@ export default function CalculatorApp() {
 
                         break;
                     }
+
+                    case "-": {
+                        setMonitor2(
+                            (+number - +monitor2)
+                                .toString()
+                        )
+
+                        break;
+                    }
                 }
             }
 
