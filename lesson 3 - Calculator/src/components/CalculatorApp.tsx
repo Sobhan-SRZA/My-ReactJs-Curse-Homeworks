@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import {  useState } from "react"
 
 export default function CalculatorApp() {
 
@@ -76,7 +76,7 @@ export default function CalculatorApp() {
 
                 switch (operator) {
                     case "+": {
-                        setMonitor2(
+                        setResult(
                             (+number + +monitor2)
                                 .toString()
                         )
@@ -84,8 +84,8 @@ export default function CalculatorApp() {
                         break;
                     }
 
-                    case "-": {
-                        setMonitor2(
+                    case "−": {
+                        setResult(
                             (+number - +monitor2)
                                 .toString()
                         )
@@ -161,9 +161,10 @@ export default function CalculatorApp() {
 
     const Monitor = () => {
         return (
-            <div className="bg-amber-900 rounded-xs text-amber-100 py-2 h-20">
-                <input className="text-xl pb-1 w-full px-3.5 text-left" type="text" disabled value={monitor1} />
-                <input className="text-3xl w-full px-2 text-right" type="text" disabled value={monitor2} />
+            <div className="bg-black rounded-xl text-amber-100 w-86">
+                <input className="text-xl w-full px-3.5 pt-2 text-left" type="text" disabled value={monitor1} name="monitor 1" />
+
+                <input className="text-4xl w-full px-5 pb-4 text-right" type="text" disabled value={monitor2} name="monitor 2" />
             </div>
         )
     }
@@ -171,11 +172,11 @@ export default function CalculatorApp() {
     const Numbers = () => {
         const gen_numbers =
             numbers
-                .map((value) =>
-                    <div className="flex gap-2">
+                .map((value, index) =>
+                    <div className="flex gap-2" key={index}>
                         {
-                            value.map((content) => (
-                                <button className="text-2xl rounded-xs text-amber-100 select-none cursor-pointer bg-amber-900 w-20 h-15" onClick={() => addContent(content)}>
+                            value.map((content, index) => (
+                                <button className="btn text-2xl rounded-xl text-amber-100 font-bold select-none cursor-pointer bg-amber-900 w-20 h-15" onClick={() => addContent(content)} key={index}>
                                     {content}
                                 </button>
                             ))
@@ -188,11 +189,11 @@ export default function CalculatorApp() {
                 {
                     controls
                         .filter(content => Array.isArray(content))
-                        .map(value =>
-                            <div className="flex gap-2">
+                        .map((value, index) =>
+                            <div className="flex gap-2" key={index}>
                                 {
-                                    value.map(content =>
-                                        <button className="text-2xl rounded-xs text-amber-100 select-none cursor-pointer bg-amber-950 w-20 h-15" onClick={() => addContent(content)}>
+                                    value.map((content, index) =>
+                                        <button className="btn text-2xl rounded-xl text-amber-100 font-bold select-none cursor-pointer bg-amber-950 w-20 h-15" onClick={() => addContent(content)} key={index}>
                                             {content}
                                         </button>
                                     )
@@ -209,9 +210,9 @@ export default function CalculatorApp() {
     const Controls = () => {
         const gen_controls =
             controls
-                .map((content) => {
+                .map((content, index) => {
                     if (!Array.isArray(content)) {
-                        return <button className="text-2xl rounded-xs text-amber-100 select-none cursor-pointer bg-amber-950 w-20 h-15 last:bg-blue-600" onClick={() => addContent(content)}>
+                        return <button className="btn text-2xl rounded-xl text-amber-100 font-bold select-none cursor-pointer bg-amber-950 w-20 h-15 last:bg-blue-600" onClick={() => addContent(content)} key={index}>
                             {content}
                         </button>
                     }
@@ -229,10 +230,11 @@ export default function CalculatorApp() {
         <>
             <h1 className="text-center font-bold text-2xl">Calculator App</h1>
 
-            <section className="flex flex-col p-10 gap-2">
+            <section className="bg-amber-100 m-8 rounded-3xl flex flex-col p-10 gap-2 items-center">
                 {/* Monitor */}
                 <Monitor />
 
+                {/* Buttons */}
                 <div className="flex felx-col items-end gap-2">
                     {/* Numbers */}
                     <Numbers />
