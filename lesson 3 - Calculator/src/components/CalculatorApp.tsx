@@ -32,6 +32,38 @@ export default function CalculatorApp() {
     // save proccess result to add monitor2
     const [result, setResult] = useState<string>("")
 
+    // check invalid result
+    const isInvalid = () => {
+        if (monitor2 === "NaN")
+            return true;
+
+        return false;
+    }
+
+    // inactive operators for error
+    const handleError = (content: string) => {
+        const isGetAnError = ["NaN", "Invalid Input!", "Infinity"].includes(monitor2);
+        if (isGetAnError) {
+            const inactive_btns = [...controls.filter(value => !Array.isArray(value) && !["←", "="].includes(value))];
+
+            controls
+                .filter(value => Array.isArray(value))
+                .map(value => {
+                    value.map(content => !["C", "CE"].includes(content) && inactive_btns.push(content))
+                })
+
+            numbers
+                .map(value => {
+                    value.map(content => ["+/-", "."].includes(content) && inactive_btns.push(content))
+                })
+
+
+            return inactive_btns.includes(content)
+        }
+
+        return false;
+    }
+
     // check the input is operator chars
     const isOperator = (content: string) => {
         const operators = [...controls.filter(value => !Array.isArray(value) && !["←", "="].includes(value))];
@@ -56,12 +88,14 @@ export default function CalculatorApp() {
     const controllerHandle = (content: string) => {
         // remove the chars
         if (content === "←") {
+            // remove one char of number and change it to 0
             if (monitor2.length < 2) {
                 setMonitor2("0");
 
                 return;
             }
 
+            // remome last chars of monitor2
             setMonitor2(monitor2.slice(0, -1));
 
             return;
@@ -76,6 +110,7 @@ export default function CalculatorApp() {
             return;
         }
 
+        // remove monitor2 and second number of monitor1
         if (content === "CE") {
             const operator = monitor1.split(/[0-9]/)[1].trim();
             setMonitor2("0");
@@ -87,6 +122,7 @@ export default function CalculatorApp() {
 
         // show the proccess
         if (content === "=") {
+            // add monitor2 to result
             if (!monitor1) {
                 setResult(monitor2)
             }
@@ -95,8 +131,10 @@ export default function CalculatorApp() {
                 const operator = monitor1.split(" ")[1];
                 const number = monitor1.split(" ")[0]
 
+                // make proocess with numbers
                 switch (operator) {
                     case "+": {
+                        // redo the proccess
                         if (monitor1.endsWith("=")) {
                             const number = monitor1.split(" ")[2]
                             setMonitor2(
@@ -118,6 +156,7 @@ export default function CalculatorApp() {
                     }
 
                     case "−": {
+                        // redo the proccess
                         if (monitor1.endsWith("=")) {
                             const number = monitor1.split(" ")[2]
                             setMonitor2(
@@ -139,6 +178,7 @@ export default function CalculatorApp() {
                     }
 
                     case "×": {
+                        // redo the proccess
                         if (monitor1.endsWith("=")) {
                             const number = monitor1.split(" ")[2]
                             setMonitor2(
@@ -160,6 +200,7 @@ export default function CalculatorApp() {
                     }
 
                     case "÷": {
+                        // redo the proccess
                         if (monitor1.endsWith("=")) {
                             const number = monitor1.split(" ")[2]
                             setMonitor2(
@@ -185,9 +226,16 @@ export default function CalculatorApp() {
             if (monitor1.slice(-1)[0] !== "=")
                 setMonitor1(monitor1 + " " + monitor2 + " =");
 
+            if (isInvalid()) {
+                setMonitor2("Invalid Input!")
+
+                return;
+            }
+
             return;
         }
 
+        // 
         if (content === "²√x") {
             setMonitor1("²√( " + (monitor1 ? monitor1 : monitor2) + " )")
             setMonitor2(
@@ -197,6 +245,7 @@ export default function CalculatorApp() {
             return;
         }
 
+        // square the number
         if (content === "x²") {
             setMonitor1("sqr( " + (monitor1 ? monitor1 : monitor2) + " )")
             setMonitor2(
@@ -206,7 +255,7 @@ export default function CalculatorApp() {
             return;
         }
 
-
+        // proccess the operators
         if (isOperator(content)) {
             setMonitor1(monitor2 + " " + content);
             setResult(monitor2)
@@ -265,7 +314,7 @@ export default function CalculatorApp() {
 
     const Monitor = () => {
         return (
-            <div className="bg-black rounded-xl text-amber-100 w-86">
+            <div className="monitor-shadow bg-black rounded-xl text-(--calc-text) w-86">
                 <input className="text-xl w-full px-3.5 pt-2 text-left" type="text" disabled value={monitor1} name="monitor 1" />
 
                 <input className="text-4xl w-full px-5 pb-4 text-right" type="text" disabled value={monitor2} name="monitor 2" />
@@ -280,7 +329,12 @@ export default function CalculatorApp() {
                     <div className="flex gap-2" key={index}>
                         {
                             value.map((content, index) => (
-                                <button className="btn text-2xl rounded-xl text-amber-100 font-bold select-none cursor-pointer bg-amber-900 w-20 h-15" onClick={() => addContent(content)} key={index}>
+                                <button
+                                    className="btn text-2xl rounded-xl text-(--calc-text) font-bold select-none cursor-pointer bg-(--calc-btn-num) w-20 h-15"
+                                    onClick={() => addContent(content)}
+                                    key={index}
+                                    disabled={handleError(content)}
+                                >
                                     {content}
                                 </button>
                             ))
@@ -297,7 +351,12 @@ export default function CalculatorApp() {
                             <div className="flex gap-2" key={index}>
                                 {
                                     value.map((content, index) =>
-                                        <button className="btn text-2xl rounded-xl text-amber-100 font-bold select-none cursor-pointer bg-amber-950 w-20 h-15" onClick={() => addContent(content)} key={index}>
+                                        <button
+                                            className="btn text-2xl rounded-xl text-(--calc-text) font-bold select-none cursor-pointer bg-(--calc-btn-operator) w-20 h-15"
+                                            onClick={() => addContent(content)}
+                                            key={index}
+                                            disabled={handleError(content)}
+                                        >
                                             {content}
                                         </button>
                                     )
@@ -316,7 +375,12 @@ export default function CalculatorApp() {
             controls
                 .map((content, index) => {
                     if (!Array.isArray(content)) {
-                        return <button className="btn text-2xl rounded-xl text-amber-100 font-bold select-none cursor-pointer bg-amber-950 w-20 h-15 last:bg-blue-600" onClick={() => addContent(content)} key={index}>
+                        return <button
+                            className="btn text-2xl rounded-xl text-(--calc-text) font-bold select-none cursor-pointer bg-(--calc-btn-operator) w-20 h-15 last:bg-(--calc-btn-operator-equl)"
+                            onClick={() => addContent(content)}
+                            key={index}
+                            disabled={handleError(content)}
+                        >
                             {content}
                         </button>
                     }
@@ -334,7 +398,7 @@ export default function CalculatorApp() {
         <>
             <h1 className="text-center font-bold text-2xl">Calculator App</h1>
 
-            <section className="bg-gray-500 shadow-inner shadow-black m-8 rounded-3xl flex flex-col p-10 gap-2 items-center">
+            <section className="bg-(--calc-main) inner-shadow m-8 rounded-3xl flex flex-col p-10 gap-2 items-center">
                 {/* Monitor */}
                 <Monitor />
 
