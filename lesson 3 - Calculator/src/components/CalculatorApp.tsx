@@ -2,6 +2,7 @@ import { useState } from "react"
 
 export default function CalculatorApp() {
 
+    // math controls
     const controls =
         [
             ["%", "CE", "C"],
@@ -14,6 +15,7 @@ export default function CalculatorApp() {
             "="
         ];
 
+    // numbers and other controls (+/- & .)
     const numbers =
         [
             ["7", "8", "9"],
@@ -22,17 +24,22 @@ export default function CalculatorApp() {
             ["+/-", "0", "."]
         ];
 
+    // monitor1 is for math showing numbers proccess
     const [monitor1, setMonitor1] = useState<string>("");
+    // monitor2 is for showing input
     const [monitor2, setMonitor2] = useState<string>("0")
 
+    // save proccess result to add monitor2
     const [result, setResult] = useState<string>("")
 
+    // check the input is operator chars
     const isOperator = (content: string) => {
         const operators = [...controls.filter(value => !Array.isArray(value) && !["←", "="].includes(value))];
 
         return operators.includes(content)
     }
 
+    // check the input is controller
     const isController = (content: string) => {
         const real_controls = [...controls.filter(value => !Array.isArray(value))];
 
@@ -45,13 +52,22 @@ export default function CalculatorApp() {
         return real_controls.includes(content)
     }
 
+    // handling the controls button
     const controllerHandle = (content: string) => {
+        // remove the chars
         if (content === "←") {
+            if (monitor2.length < 2) {
+                setMonitor2("0");
+
+                return;
+            }
+
             setMonitor2(monitor2.slice(0, -1));
 
             return;
         }
 
+        // remove all proccesses
         if (content === "C") {
             setMonitor2("0");
             setMonitor1("");
@@ -66,9 +82,11 @@ export default function CalculatorApp() {
             return;
         }
 
+        // show the proccess
         if (content === "=") {
-            if (!monitor1)
+            if (!monitor1) {
                 setResult(monitor2)
+            }
 
             else {
                 const operator = monitor1.slice(-1);
@@ -113,14 +131,21 @@ export default function CalculatorApp() {
                 }
             }
 
-            if (result)
-                setMonitor2(result);
-
             if (monitor1.slice(-1)[0] !== "=")
                 setMonitor1(monitor1 + " " + monitor2 + " =");
 
             return;
         }
+
+        if (content === "²√x") {
+            setMonitor1("²√" + monitor2)
+            setMonitor2(
+                ((+monitor2) ** (1 / 2)).toString()
+            )
+
+            return;
+        }
+
 
         if (isOperator(content)) {
             setMonitor1(monitor2 + " " + content);
@@ -140,7 +165,7 @@ export default function CalculatorApp() {
         }
 
         if (content === ".") {
-            if (!monitor2) {
+            if (monitor2 === "0") {
                 setMonitor2("0.")
 
                 return;
