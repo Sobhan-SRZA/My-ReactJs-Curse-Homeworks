@@ -1,15 +1,38 @@
 @import "tailwindcss";
 
+:root {
+  --bg: rgb(7, 18, 36);
+  --calc-main: #172b43;
+  --calc-text: rgb(255, 242, 182);
+  --calc-btn-num: #0c5293;
+  --calc-btn-disabled: #323232;
+  --calc-btn-operator: #0b1f82;
+  --calc-btn-operator-equl: #d23a3a;
+}
+
 body {
-  background-color: black;
-  color: white;
+  background-color: var(--bg);
+  color: var(--calc-text);
 }
 
 .btn {
-  box-shadow: inset 5px 5px 8px rgb(0, 0, 0);
+  box-shadow: inset 5px 5px 8px rgba(0, 0, 0, 0.788);
   transition: all .3s ease-in-out;
 }
 
-.btn:hover {
+.btn:disabled {
+  background: var(--calc-btn-disabled);
+  cursor: not-allowed;
+}
+
+.btn:not(:disabled):hover {
   box-shadow: inset 0px 0px 15px 2px rgb(0, 0, 0);
+}
+
+.inner-shadow {
+  box-shadow: inset 5px 5px 8px rgba(0, 0, 0, 0.79);
+}
+
+.monitor-shadow {
+  box-shadow: inset 5px 5px 8px rgba(255, 255, 255, 0.133);
 }
