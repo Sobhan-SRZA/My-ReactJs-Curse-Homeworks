@@ -71,13 +71,16 @@ export default function CalculatorApp() {
         if (content === "C") {
             setMonitor2("0");
             setMonitor1("");
-            setResult("")
+            setResult("");
 
             return;
         }
 
         if (content === "CE") {
+            const operator = monitor1.split(/[0-9]/)[1].trim();
             setMonitor2("0");
+            setMonitor1(monitor1.split(operator)[0] + operator);
+            setResult("");
 
             return;
         }
@@ -89,42 +92,90 @@ export default function CalculatorApp() {
             }
 
             else {
-                const operator = monitor1.slice(-1);
+                const operator = monitor1.split(" ")[1];
                 const number = monitor1.split(" ")[0]
 
                 switch (operator) {
                     case "+": {
-                        setMonitor2(
-                            (+number + +monitor2)
-                                .toString()
-                        )
+                        if (monitor1.endsWith("=")) {
+                            const number = monitor1.split(" ")[2]
+                            setMonitor2(
+                                (+monitor2 + +number)
+                                    .toString()
+                            )
+
+                            setMonitor1(monitor2 + " " + operator + " " + number + " =");
+                        }
+
+                        else {
+                            setMonitor2(
+                                (+number + +monitor2)
+                                    .toString()
+                            )
+                        }
 
                         break;
                     }
 
                     case "−": {
-                        setMonitor2(
-                            (+number - +monitor2)
-                                .toString()
-                        )
+                        if (monitor1.endsWith("=")) {
+                            const number = monitor1.split(" ")[2]
+                            setMonitor2(
+                                (+monitor2 - +number)
+                                    .toString()
+                            )
+
+                            setMonitor1(monitor2 + " " + operator + " " + number + " =");
+                        }
+
+                        else {
+                            setMonitor2(
+                                (+number - +monitor2)
+                                    .toString()
+                            )
+                        }
 
                         break;
                     }
 
                     case "×": {
-                        setMonitor2(
-                            (+number * +monitor2)
-                                .toString()
-                        )
+                        if (monitor1.endsWith("=")) {
+                            const number = monitor1.split(" ")[2]
+                            setMonitor2(
+                                (+monitor2 * +number)
+                                    .toString()
+                            )
+
+                            setMonitor1(monitor2 + " " + operator + " " + number + " =");
+                        }
+
+                        else {
+                            setMonitor2(
+                                (+number * +monitor2)
+                                    .toString()
+                            )
+                        }
 
                         break;
                     }
 
                     case "÷": {
-                        setMonitor2(
-                            (+number / +monitor2)
-                                .toString()
-                        )
+                        if (monitor1.endsWith("=")) {
+                            const number = monitor1.split(" ")[2]
+                            setMonitor2(
+                                (+monitor2 / +number)
+                                    .toString()
+                            )
+
+                            setMonitor1(monitor2 + " " + operator + " " + number + " =");
+                        }
+
+                        else {
+                            setMonitor2(
+                                (+number / +monitor2)
+                                    .toString()
+                            )
+                        }
 
                         break;
                     }
@@ -138,9 +189,18 @@ export default function CalculatorApp() {
         }
 
         if (content === "²√x") {
-            setMonitor1("²√" + monitor2)
+            setMonitor1("²√( " + (monitor1 ? monitor1 : monitor2) + " )")
             setMonitor2(
                 ((+monitor2) ** (1 / 2)).toString()
+            )
+
+            return;
+        }
+
+        if (content === "x²") {
+            setMonitor1("sqr( " + (monitor1 ? monitor1 : monitor2) + " )")
+            setMonitor2(
+                ((+monitor2) ** 2).toString()
             )
 
             return;
