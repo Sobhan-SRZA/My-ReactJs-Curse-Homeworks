@@ -298,9 +298,16 @@ export default function CalculatorApp() {
         }
 
         else {
+            // 
             if (result && result === monitor1.split(" ")[0]) {
                 setResult("")
-                setMonitor2(content);
+
+                if (content === ".")
+                    setMonitor2("0.");
+
+                else
+                    setMonitor2(content);
+
             }
 
             else {
