@@ -58,6 +58,7 @@ export default function CalculatorApp() {
                 })
 
 
+            setMonitor2("Invalid Input!")
             return inactive_btns.includes(content)
         }
 
@@ -251,6 +252,34 @@ export default function CalculatorApp() {
             setMonitor2(
                 ((+monitor2) ** 2).toString()
             )
+
+            return;
+        }
+
+        if (content === "¹∕x") {
+            setMonitor1("1/(" + (monitor1 ? monitor1 : monitor2) + ")")
+            setMonitor2(
+                ((1 / +monitor2)).toString()
+            )
+
+            return;
+        }
+
+        if (content === "%") {
+            const operator = monitor1 && monitor1.split(/[0-9]/)[1].trim();
+            const number = monitor1 && monitor1.split(operator)[0].trim();
+            if (operator) {
+                const result = ((+monitor2 * 5) / 100).toString();
+                setMonitor2(
+                    result
+                )
+                setMonitor1(number + " " + operator + " " + result)
+            }
+
+            else {
+                setMonitor1("0")
+                setMonitor2("0")
+            }
 
             return;
         }
