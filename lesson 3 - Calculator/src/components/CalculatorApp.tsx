@@ -24,6 +24,9 @@ export default function CalculatorApp() {
             ["+/-", "0", "."]
         ];
 
+    // Check error
+    const [error, setError] = useState<boolean>(false)
+
     // monitor1 is for math showing numbers proccess
     const [monitor1, setMonitor1] = useState<string>("");
     // monitor2 is for showing input
@@ -57,11 +60,19 @@ export default function CalculatorApp() {
                     value.map(content => ["+/-", "."].includes(content) && inactive_btns.push(content))
                 })
 
+            if (
+                monitor1.split(" ").some(a => ["÷ 0", "1/(0)"].includes(a))
+            )
+                setMonitor2("Cannot divide by zero!")
 
-            setMonitor2("Invalid Input!")
+            else
+                setMonitor2("Invalid Input!")
+
+            setError(true)
             return inactive_btns.includes(content)
         }
 
+        setError(false)
         return false;
     }
 
@@ -269,7 +280,11 @@ export default function CalculatorApp() {
             const operator = monitor1 && monitor1.split(/[0-9]/)[1].trim();
             const number = monitor1 && monitor1.split(operator)[0].trim();
             if (operator) {
-                const result = ((+monitor2 * 5) / 100).toString();
+                let result = ((+monitor2 * 1) / 100).toString();
+                if (["+", "−"].includes(operator)) {
+                    result = ((+monitor2 * +number) / 100).toString();
+                }
+
                 setMonitor2(
                     result
                 )
