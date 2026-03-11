@@ -1,9 +1,17 @@
+import type {
+    AddContent,
+    ControlButtons,
+    HandleError
+} from "../types";
 import { useState } from "react"
+import Controls from "../components/Controls";
+import Numbers from "../components/Numbers";
+import Monitor from "../components/Monitor";
 
 export default function CalculatorApp() {
 
     // math controls
-    const controls =
+    const controls: ControlButtons =
         [
             ["%", "CE", "C"],
             ["¹∕x", "x²", "²√x"],
@@ -44,7 +52,7 @@ export default function CalculatorApp() {
     }
 
     // inactive operators for error
-    const handleError = (content: string) => {
+    const handleError: HandleError = (content: string) => {
         const isGetAnError = ["NaN", "Invalid Input!", "Infinity"].includes(monitor2);
         if (isGetAnError) {
             const inactive_btns = [...controls.filter(value => !Array.isArray(value) && !["←", "="].includes(value))];
@@ -126,7 +134,12 @@ export default function CalculatorApp() {
         if (content === "CE") {
             const operator = monitor1.split(/[0-9]/)[1].trim();
             setMonitor2("0");
-            setMonitor1(monitor1.split(operator)[0] + operator);
+            if (
+                !monitor1.startsWith("¹∕")
+                || !monitor1.startsWith("sqr(")
+            )
+                setMonitor1(monitor1.split(operator)[0] + operator);
+                
             setResult("");
 
             return;
@@ -310,7 +323,7 @@ export default function CalculatorApp() {
         return;
     }
 
-    const addContent = (content: string) => {
+    const addContent: AddContent = (content) => {
         if (isController(content)) {
             controllerHandle(content)
 
@@ -363,103 +376,33 @@ export default function CalculatorApp() {
         return;
     }
 
-    const Monitor = () => {
-        return (
-            <div className="monitor-shadow bg-black rounded-xl text-(--calc-text) w-86">
-                <input className="text-xl w-full px-3.5 pt-2 text-left" type="text" disabled value={monitor1} name="monitor 1" />
-
-                <input className="text-4xl w-full px-5 pb-4 text-right" type="text" disabled value={monitor2} name="monitor 2" />
-            </div>
-        )
-    }
-
-    const Numbers = () => {
-        const gen_numbers =
-            numbers
-                .map((value, index) =>
-                    <div className="flex gap-2" key={index}>
-                        {
-                            value.map((content, index) => (
-                                <button
-                                    className="btn text-2xl rounded-xl text-(--calc-text) font-bold select-none cursor-pointer bg-(--calc-btn-num) w-20 h-15"
-                                    onClick={() => addContent(content)}
-                                    key={index}
-                                    disabled={handleError(content)}
-                                >
-                                    {content}
-                                </button>
-                            ))
-                        }
-                    </div>
-                )
-
-        return (
-            <div className="gap-2 flex flex-col">
-                {
-                    controls
-                        .filter(content => Array.isArray(content))
-                        .map((value, index) =>
-                            <div className="flex gap-2" key={index}>
-                                {
-                                    value.map((content, index) =>
-                                        <button
-                                            className="btn text-2xl rounded-xl text-(--calc-text) font-bold select-none cursor-pointer bg-(--calc-btn-operator) w-20 h-15"
-                                            onClick={() => addContent(content)}
-                                            key={index}
-                                            disabled={handleError(content)}
-                                        >
-                                            {content}
-                                        </button>
-                                    )
-                                }
-                            </div>
-                        )
-                }
-
-                {gen_numbers}
-            </div>
-        );
-    }
-
-    const Controls = () => {
-        const gen_controls =
-            controls
-                .map((content, index) => {
-                    if (!Array.isArray(content)) {
-                        return <button
-                            className="btn text-2xl rounded-xl text-(--calc-text) font-bold select-none cursor-pointer bg-(--calc-btn-operator) w-20 h-15 last:bg-(--calc-btn-operator-equl)"
-                            onClick={() => addContent(content)}
-                            key={index}
-                            disabled={handleError(content)}
-                        >
-                            {content}
-                        </button>
-                    }
-                })
-
-
-        return (
-            <div className="flex flex-col gap-2">
-                {gen_controls}
-            </div>
-        );
-    }
-
     return (
         <>
             <h1 className="text-center font-bold text-2xl">Calculator App</h1>
 
             <section className="bg-(--calc-main) inner-shadow m-8 rounded-3xl flex flex-col p-10 gap-2 items-center">
                 {/* Monitor */}
-                <Monitor />
+                <Monitor
+                    monitor1={monitor1}
+                    monitor2={monitor2}
+                />
 
                 {/* Buttons */}
                 <div className="flex felx-col items-end gap-2">
                     {/* Numbers */}
-                    <Numbers />
+                    <Numbers
+                        addContent={addContent}
+                        handleError={handleError}
+                        controls={controls}
+                        numbers={numbers}
+                    />
 
                     {/* Controls */}
-                    <Controls />
+                    <Controls
+                        addContent={addContent}
+                        handleError={handleError}
+                        controls={controls}
+                    />
                 </div>
             </section>
         </>

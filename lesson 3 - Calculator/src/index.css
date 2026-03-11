@@ -8,6 +8,8 @@
   --calc-btn-disabled: #323232;
   --calc-btn-operator: #0b1f82;
   --calc-btn-operator-equl: #d23a3a;
+  --hover-shadow: rgb(0, 0, 0);
+  --active-shadow: rgb(0, 0, 0);
 }
 
 body {
@@ -25,9 +27,15 @@ body {
   cursor: not-allowed;
 }
 
-.btn:not(:disabled):hover {
-  box-shadow: inset 0px 0px 15px 2px rgb(0, 0, 0);
+/* .btn:not(:disabled):hover {
+  box-shadow: inset 0px 0px 15px 2px var(--active-shadow);
+} */
+
+.btn:not(:disabled):active {
+  box-shadow: inset 0px 0px 15px 2px var(--active-shadow);
 }
+
+
 
 .inner-shadow {
   box-shadow: inset 5px 5px 8px rgba(0, 0, 0, 0.79);
