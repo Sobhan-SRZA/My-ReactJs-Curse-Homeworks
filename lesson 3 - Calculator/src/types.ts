@@ -23,3 +23,8 @@ export interface MonitorHook {
     monitor1: string;
     monitor2: string;
 }
+
+export type ErrorMessage =
+    "Cannot divide by zero!"
+    | "Invalid Input!"
+    | undefined;

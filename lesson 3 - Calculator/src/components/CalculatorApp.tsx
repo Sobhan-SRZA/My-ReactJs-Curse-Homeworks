@@ -1,9 +1,13 @@
 import type {
     AddContent,
     ControlButtons,
+    ErrorMessage,
     HandleError
 } from "../types";
-import { useState } from "react"
+import {
+    useEffect,
+    useState
+} from "react"
 import Controls from "../components/Controls";
 import Numbers from "../components/Numbers";
 import Monitor from "../components/Monitor";
@@ -33,7 +37,7 @@ export default function CalculatorApp() {
         ];
 
     // Check error
-    const [error, setError] = useState<boolean>(false)
+    const [error, setError] = useState<ErrorMessage>(undefined)
 
     // monitor1 is for math showing numbers proccess
     const [monitor1, setMonitor1] = useState<string>("");
@@ -53,8 +57,7 @@ export default function CalculatorApp() {
 
     // inactive operators for error
     const handleError: HandleError = (content: string) => {
-        const isGetAnError = ["NaN", "Invalid Input!", "Infinity"].includes(monitor2);
-        if (isGetAnError) {
+        if (error !== undefined) {
             const inactive_btns = [...controls.filter(value => !Array.isArray(value) && !["←", "="].includes(value))];
 
             controls
@@ -68,19 +71,10 @@ export default function CalculatorApp() {
                     value.map(content => ["+/-", "."].includes(content) && inactive_btns.push(content))
                 })
 
-            if (
-                monitor1.split(" ").some(a => ["÷ 0", "1/(0)"].includes(a))
-            )
-                setMonitor2("Cannot divide by zero!")
-
-            else
-                setMonitor2("Invalid Input!")
-
-            setError(true)
             return inactive_btns.includes(content)
         }
 
-        setError(false)
+        setError(undefined);
         return false;
     }
 
@@ -126,6 +120,7 @@ export default function CalculatorApp() {
             setMonitor2("0");
             setMonitor1("");
             setResult("");
+            setError(undefined)
 
             return;
         }
@@ -139,7 +134,7 @@ export default function CalculatorApp() {
                 || !monitor1.startsWith("sqr(")
             )
                 setMonitor1(monitor1.split(operator)[0] + operator);
-                
+
             setResult("");
 
             return;
@@ -228,19 +223,28 @@ export default function CalculatorApp() {
                         // redo the proccess
                         if (monitor1.endsWith("=")) {
                             const number = monitor1.split(" ")[2]
-                            setMonitor2(
-                                (+monitor2 / +number)
-                                    .toString()
-                            )
+                            if (number === "0")
+                                setError("Cannot divide by zero!")
 
-                            setMonitor1(monitor2 + " " + operator + " " + number + " =");
+                            else {
+                                setMonitor2(
+                                    (+monitor2 / +number)
+                                        .toString()
+                                )
+
+                                setMonitor1(monitor2 + " " + operator + " " + number + " =");
+                            }
                         }
 
                         else {
-                            setMonitor2(
-                                (+number / +monitor2)
-                                    .toString()
-                            )
+                            if (monitor2 === "0")
+                                setError("Cannot divide by zero!")
+
+                            else
+                                setMonitor2(
+                                    (+number / +monitor2)
+                                        .toString()
+                                )
                         }
 
                         break;
@@ -252,7 +256,7 @@ export default function CalculatorApp() {
                 setMonitor1(monitor1 + " " + monitor2 + " =");
 
             if (isInvalid()) {
-                setMonitor2("Invalid Input!")
+                setError("Invalid Input!")
 
                 return;
             }
@@ -282,9 +286,14 @@ export default function CalculatorApp() {
 
         if (content === "¹∕x") {
             setMonitor1("1/(" + (monitor1 ? monitor1 : monitor2) + ")")
-            setMonitor2(
-                ((1 / +monitor2)).toString()
-            )
+
+            if (monitor2 == "0")
+                setError("Cannot divide by zero!")
+
+            else
+                setMonitor2(
+                    ((1 / +monitor2)).toString()
+                )
 
             return;
         }
@@ -376,6 +385,16 @@ export default function CalculatorApp() {
         return;
     }
 
+    useEffect(() => {
+        if (error !== undefined) {
+            setMonitor2(error)
+        }
+        
+        else {
+            setError(undefined)
+        }
+    }, [error])
+
     return (
         <>
             <h1 className="text-center font-bold text-2xl">Calculator App</h1>
@@ -391,8 +410,8 @@ export default function CalculatorApp() {
                 <div className="flex felx-col items-end gap-2">
                     {/* Numbers */}
                     <Numbers
-                        addContent={addContent}
                         handleError={handleError}
+                        addContent={addContent}
                         controls={controls}
                         numbers={numbers}
                     />
