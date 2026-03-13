@@ -100,23 +100,7 @@ export default function CalculatorApp() {
 
     // handling the controls button
     const controllerHandle = (content: string) => {
-        // remove the chars
-        if (content === "←") {
-            // remove one char of number and change it to 0
-            if (monitor2.length < 2) {
-                setMonitor2("0");
-
-                return;
-            }
-
-            // remome last chars of monitor2
-            setMonitor2(monitor2.slice(0, -1));
-
-            return;
-        }
-
-        // remove all proccesses
-        if (content === "C") {
+        if (error) {
             setMonitor2("0");
             setMonitor1("");
             setResult("");
@@ -125,208 +109,236 @@ export default function CalculatorApp() {
             return;
         }
 
-        // remove monitor2 and second number of monitor1
-        if (content === "CE") {
-            const operator = monitor1.split(/[0-9]/)[1].trim();
-            setMonitor2("0");
-            if (
-                !monitor1.startsWith("¹∕")
-                || !monitor1.startsWith("sqr(")
-            )
-                setMonitor1(monitor1.split(operator)[0] + operator);
+        else {
 
-            setResult("");
+            // remove the chars
+            if (content === "←") {
+                // remove one char of number and change it to 0
+                if (monitor2.length < 2) {
+                    setMonitor2("0");
 
-            return;
-        }
+                    return;
+                }
 
-        // show the proccess
-        if (content === "=") {
-            // add monitor2 to result
-            if (!monitor1) {
-                setResult(monitor2)
+                // remome last chars of monitor2
+                setMonitor2(monitor2.slice(0, -1));
+
+                return;
             }
 
-            else {
-                const operator = monitor1.split(" ")[1];
-                const number = monitor1.split(" ")[0]
+            // remove all proccesses
+            if (content === "C") {
+                setMonitor2("0");
+                setMonitor1("");
+                setResult("");
+                setError(undefined)
 
-                // make proocess with numbers
-                switch (operator) {
-                    case "+": {
-                        // redo the proccess
-                        if (monitor1.endsWith("=")) {
-                            const number = monitor1.split(" ")[2]
-                            setMonitor2(
-                                (+monitor2 + +number)
-                                    .toString()
-                            )
+                return;
+            }
 
-                            setMonitor1(monitor2 + " " + operator + " " + number + " =");
-                        }
+            // remove monitor2 and second number of monitor1
+            if (content === "CE") {
+                const operator = monitor1.split(/[0-9]/)[1].trim();
+                setMonitor2("0");
+                if (
+                    !monitor1.startsWith("¹∕")
+                    || !monitor1.startsWith("sqr(")
+                )
+                    setMonitor1(monitor1.split(operator)[0] + operator);
 
-                        else {
-                            setMonitor2(
-                                (+number + +monitor2)
-                                    .toString()
-                            )
-                        }
+                setResult("");
 
-                        break;
-                    }
+                return;
+            }
 
-                    case "−": {
-                        // redo the proccess
-                        if (monitor1.endsWith("=")) {
-                            const number = monitor1.split(" ")[2]
-                            setMonitor2(
-                                (+monitor2 - +number)
-                                    .toString()
-                            )
+            // show the proccess
+            if (content === "=") {
+                // add monitor2 to result
+                if (!monitor1) {
+                    setResult(monitor2)
+                }
 
-                            setMonitor1(monitor2 + " " + operator + " " + number + " =");
-                        }
+                else {
+                    const operator = monitor1.split(" ")[1];
+                    const number = monitor1.split(" ")[0]
 
-                        else {
-                            setMonitor2(
-                                (+number - +monitor2)
-                                    .toString()
-                            )
-                        }
-
-                        break;
-                    }
-
-                    case "×": {
-                        // redo the proccess
-                        if (monitor1.endsWith("=")) {
-                            const number = monitor1.split(" ")[2]
-                            setMonitor2(
-                                (+monitor2 * +number)
-                                    .toString()
-                            )
-
-                            setMonitor1(monitor2 + " " + operator + " " + number + " =");
-                        }
-
-                        else {
-                            setMonitor2(
-                                (+number * +monitor2)
-                                    .toString()
-                            )
-                        }
-
-                        break;
-                    }
-
-                    case "÷": {
-                        // redo the proccess
-                        if (monitor1.endsWith("=")) {
-                            const number = monitor1.split(" ")[2]
-                            if (number === "0")
-                                setError("Cannot divide by zero!")
-
-                            else {
+                    // make proocess with numbers
+                    switch (operator) {
+                        case "+": {
+                            // redo the proccess
+                            if (monitor1.endsWith("=")) {
+                                const number = monitor1.split(" ")[2]
                                 setMonitor2(
-                                    (+monitor2 / +number)
+                                    (+monitor2 + +number)
                                         .toString()
                                 )
 
                                 setMonitor1(monitor2 + " " + operator + " " + number + " =");
                             }
-                        }
 
-                        else {
-                            if (monitor2 === "0")
-                                setError("Cannot divide by zero!")
-
-                            else
+                            else {
                                 setMonitor2(
-                                    (+number / +monitor2)
+                                    (+number + +monitor2)
                                         .toString()
                                 )
+                            }
+
+                            break;
                         }
 
-                        break;
+                        case "−": {
+                            // redo the proccess
+                            if (monitor1.endsWith("=")) {
+                                const number = monitor1.split(" ")[2]
+                                setMonitor2(
+                                    (+monitor2 - +number)
+                                        .toString()
+                                )
+
+                                setMonitor1(monitor2 + " " + operator + " " + number + " =");
+                            }
+
+                            else {
+                                setMonitor2(
+                                    (+number - +monitor2)
+                                        .toString()
+                                )
+                            }
+
+                            break;
+                        }
+
+                        case "×": {
+                            // redo the proccess
+                            if (monitor1.endsWith("=")) {
+                                const number = monitor1.split(" ")[2]
+                                setMonitor2(
+                                    (+monitor2 * +number)
+                                        .toString()
+                                )
+
+                                setMonitor1(monitor2 + " " + operator + " " + number + " =");
+                            }
+
+                            else {
+                                setMonitor2(
+                                    (+number * +monitor2)
+                                        .toString()
+                                )
+                            }
+
+                            break;
+                        }
+
+                        case "÷": {
+                            // redo the proccess
+                            if (monitor1.endsWith("=")) {
+                                const number = monitor1.split(" ")[2]
+                                if (number === "0")
+                                    setError("Cannot divide by zero!")
+
+                                else {
+                                    setMonitor2(
+                                        (+monitor2 / +number)
+                                            .toString()
+                                    )
+
+                                    setMonitor1(monitor2 + " " + operator + " " + number + " =");
+                                }
+                            }
+
+                            else {
+                                if (monitor2 === "0")
+                                    setError("Cannot divide by zero!")
+
+                                else
+                                    setMonitor2(
+                                        (+number / +monitor2)
+                                            .toString()
+                                    )
+                            }
+
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (monitor1.slice(-1)[0] !== "=")
-                setMonitor1(monitor1 + " " + monitor2 + " =");
+                if (monitor1.slice(-1)[0] !== "=")
+                    setMonitor1(monitor1 + " " + monitor2 + " =");
 
-            if (isInvalid()) {
-                setError("Invalid Input!")
+                if (isInvalid()) {
+                    setError("Invalid Input!")
+
+                    return;
+                }
 
                 return;
             }
 
-            return;
-        }
-
-        // 
-        if (content === "²√x") {
-            setMonitor1("²√( " + (monitor1 ? monitor1 : monitor2) + " )")
-            setMonitor2(
-                ((+monitor2) ** (1 / 2)).toString()
-            )
-
-            return;
-        }
-
-        // square the number
-        if (content === "x²") {
-            setMonitor1("sqr( " + (monitor1 ? monitor1 : monitor2) + " )")
-            setMonitor2(
-                ((+monitor2) ** 2).toString()
-            )
-
-            return;
-        }
-
-        if (content === "¹∕x") {
-            setMonitor1("1/(" + (monitor1 ? monitor1 : monitor2) + ")")
-
-            if (monitor2 == "0")
-                setError("Cannot divide by zero!")
-
-            else
+            // 
+            if (content === "²√x") {
+                setMonitor1("²√( " + (monitor1 ? monitor1 : monitor2) + " )")
                 setMonitor2(
-                    ((1 / +monitor2)).toString()
+                    ((+monitor2) ** (1 / 2)).toString()
                 )
 
-            return;
-        }
+                return;
+            }
 
-        if (content === "%") {
-            const operator = monitor1 && monitor1.split(/[0-9]/)[1].trim();
-            const number = monitor1 && monitor1.split(operator)[0].trim();
-            if (operator) {
-                let result = ((+monitor2 * 1) / 100).toString();
-                if (["+", "−"].includes(operator)) {
-                    result = ((+monitor2 * +number) / 100).toString();
+            // square the number
+            if (content === "x²") {
+                setMonitor1("sqr( " + (monitor1 ? monitor1 : monitor2) + " )")
+                setMonitor2(
+                    ((+monitor2) ** 2).toString()
+                )
+
+                return;
+            }
+
+            if (content === "¹∕x") {
+                setMonitor1("1/(" + (monitor1 ? monitor1 : monitor2) + ")")
+
+                if (monitor2 == "0")
+                    setError("Cannot divide by zero!")
+
+                else
+                    setMonitor2(
+                        ((1 / +monitor2)).toString()
+                    )
+
+                return;
+            }
+
+            if (content === "%") {
+                const operator = monitor1 && monitor1.split(/[0-9]/)[1].trim();
+                const number = monitor1 && monitor1.split(operator)[0].trim();
+                if (operator) {
+                    let result = ((+monitor2 * 1) / 100).toString();
+                    if (["+", "−"].includes(operator)) {
+                        result = ((+monitor2 * +number) / 100).toString();
+                    }
+
+                    setMonitor2(
+                        result
+                    )
+                    setMonitor1(number + " " + operator + " " + result)
                 }
 
-                setMonitor2(
-                    result
-                )
-                setMonitor1(number + " " + operator + " " + result)
+                else {
+                    setMonitor1("0")
+                    setMonitor2("0")
+                }
+
+                return;
             }
 
-            else {
-                setMonitor1("0")
-                setMonitor2("0")
+            // proccess the operators
+            if (isOperator(content)) {
+                setMonitor1(monitor2 + " " + content);
+                setResult(monitor2)
+
+                return;
             }
-
-            return;
-        }
-
-        // proccess the operators
-        if (isOperator(content)) {
-            setMonitor1(monitor2 + " " + content);
-            setResult(monitor2)
-
-            return;
         }
 
         return;
@@ -364,21 +376,30 @@ export default function CalculatorApp() {
         }
 
         else {
-            // 
-            if (result && result === monitor1.split(" ")[0]) {
+            if (error) {
+                setError(undefined)
                 setResult("")
-
-                if (content === ".")
-                    setMonitor2("0.");
-
-                else
-                    setMonitor2(content);
-
+                setMonitor1("")
+                setMonitor2(content);
             }
 
             else {
-                setResult("")
-                setMonitor2(monitor2 + content);
+                // 
+                if (result && result === monitor1.split(" ")[0]) {
+                    setResult("")
+
+                    if (content === ".")
+                        setMonitor2("0.");
+
+                    else
+                        setMonitor2(content);
+
+                }
+
+                else {
+                    setResult("")
+                    setMonitor2(monitor2 + content);
+                }
             }
         }
 
@@ -389,7 +410,7 @@ export default function CalculatorApp() {
         if (error !== undefined) {
             setMonitor2(error)
         }
-        
+
         else {
             setError(undefined)
         }

@@ -1,6 +1,10 @@
 import type { ControlHook } from "../types";
 
-export default function Controls({ controls, addContent, handleError }: ControlHook) {
+export default function Controls({
+    controls,
+    addContent,
+    handleError
+}: ControlHook) {
     const gen_controls =
         controls
             .map((content, index) => {

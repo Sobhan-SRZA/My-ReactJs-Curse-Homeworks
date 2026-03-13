@@ -1,6 +1,9 @@
 import type { MonitorHook } from "../types";
 
-export default function Monitor({ monitor1, monitor2 }: MonitorHook) {
+export default function Monitor({
+    monitor1,
+    monitor2
+}: MonitorHook) {
     return (
         <div className="monitor-shadow bg-black rounded-xl text-(--calc-text) w-86">
             <input className="text-xl w-full px-3.5 pt-2 text-left" type="text" disabled value={monitor1} name="monitor 1" />
