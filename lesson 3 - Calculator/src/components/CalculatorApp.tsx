@@ -110,7 +110,6 @@ export default function CalculatorApp() {
         }
 
         else {
-
             // remove the chars
             if (content === "←") {
                 // remove one char of number and change it to 0
@@ -282,7 +281,7 @@ export default function CalculatorApp() {
                 return;
             }
 
-            // 
+            // جذر بر 2
             if (content === "²√x") {
                 setMonitor1("²√( " + (monitor1 ? monitor1 : monitor2) + " )")
                 setMonitor2(
@@ -292,7 +291,7 @@ export default function CalculatorApp() {
                 return;
             }
 
-            // square the number
+            // توان 2 عدد
             if (content === "x²") {
                 setMonitor1("sqr( " + (monitor1 ? monitor1 : monitor2) + " )")
                 setMonitor2(
@@ -302,6 +301,7 @@ export default function CalculatorApp() {
                 return;
             }
 
+            // تقسیم عدد بر یک
             if (content === "¹∕x") {
                 setMonitor1("1/(" + (monitor1 ? monitor1 : monitor2) + ")")
 
@@ -316,6 +316,7 @@ export default function CalculatorApp() {
                 return;
             }
 
+            // نسبت درصد گیری
             if (content === "%") {
                 const operator = monitor1 && monitor1.split(/[0-9]/)[1].trim();
                 const number = monitor1 && monitor1.split(operator)[0].trim();
@@ -339,7 +340,7 @@ export default function CalculatorApp() {
                 return;
             }
 
-            // proccess the operators
+            // فیلتر کردن عملگر ها و افزودن به مانیتور 1
             if (isOperator(content)) {
                 setMonitor1(monitor2 + " " + content);
                 setResult(monitor2)
@@ -351,13 +352,16 @@ export default function CalculatorApp() {
         return;
     }
 
+    // افزودن عملگر یا عدد به مانیتور 2 و یا نمایش نتیجه
     const addContent: AddContent = (content) => {
+        // فیلتر کردن دکمه های کنترلی گه برای نمایش خروجی هستن و یا پاک سازی مانیتور
         if (isController(content)) {
             controllerHandle(content)
 
             return;
         }
 
+        // استفاده از اعشار
         if (content === ".") {
             if (monitor2 === "0") {
                 setMonitor2("0.")
@@ -370,12 +374,14 @@ export default function CalculatorApp() {
             }
         }
 
+        // منفی/مثبت کردن
         if (content === "+/-") {
             setMonitor2((+monitor2 * -1).toString())
 
             return;
         }
 
+        // شرط وجود داشتن صفر در مانیتور برای حذفش در مانیتور
         if (monitor2 === "0") {
             setMonitor2(content);
 
@@ -383,6 +389,7 @@ export default function CalculatorApp() {
         }
 
         else {
+            // هندل و نمایش ارور
             if (error) {
                 setError(undefined)
                 setResult("")
@@ -391,7 +398,9 @@ export default function CalculatorApp() {
             }
 
             else {
-                // 
+                // در صورت وجود نداشتن ارور محتوا به مانیتور اضافه شود
+                // به شرطی محتوا عوض شود که اگر ورودی . بود به اعشار شود یعنی "0." و اگر نبود خود ورودی ثبت شود
+                // این شرط فقط برای محتوایی هست که بعد از نمایش نتیحه = برای وارد کردن محتوای جدید هست
                 if (result && result === monitor1.split(" ")[0]) {
                     setResult("")
 
@@ -403,6 +412,7 @@ export default function CalculatorApp() {
 
                 }
 
+                // اضافه کردن عدد جدید به عدد قبلی مانیتور2
                 else {
                     setResult("")
                     setMonitor2(monitor2 + content);
@@ -413,6 +423,8 @@ export default function CalculatorApp() {
         return;
     }
 
+    // هندل کردن و نمایش ارور درصورت وجود ارور و در غیر این صورت حذف ارور
+    // فعال شدن در صورت تغییر error
     useEffect(() => {
         if (error !== undefined) {
             setMonitor2(error)
