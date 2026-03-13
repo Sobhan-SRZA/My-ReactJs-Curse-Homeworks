@@ -138,14 +138,21 @@ export default function CalculatorApp() {
 
             // remove monitor2 and second number of monitor1
             if (content === "CE") {
-                const operator = monitor1.split(/[0-9]/)[1].trim();
-                setMonitor2("0");
-                if (
-                    !monitor1.startsWith("¹∕")
-                    || !monitor1.startsWith("sqr(")
-                )
-                    setMonitor1(monitor1.split(operator)[0] + operator);
+                if (monitor1) {
+                    const operator = monitor1
+                        .split("")
+                        .map(a => a.trim())
+                        .filter(a => a.length > 0)
+                        .filter(a => !a.match(/[0-9]/))[0];
 
+                    if (
+                        !monitor1.startsWith("¹∕")
+                        || !monitor1.startsWith("sqr(")
+                    )
+                        setMonitor1(monitor1.split(operator)[0] + operator);
+                }
+
+                setMonitor2("0");
                 setResult("");
 
                 return;
