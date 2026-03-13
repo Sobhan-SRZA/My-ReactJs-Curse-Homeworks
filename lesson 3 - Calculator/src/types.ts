@@ -27,4 +27,5 @@ export interface MonitorHook {
 export type ErrorMessage =
     "Cannot divide by zero!"
     | "Invalid Input!"
+    | "Overflow!"
     | undefined;
