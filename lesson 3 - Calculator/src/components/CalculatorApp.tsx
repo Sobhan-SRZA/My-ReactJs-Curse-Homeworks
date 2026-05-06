@@ -55,6 +55,25 @@ export default function CalculatorApp() {
         return false;
     }
 
+    // check big number
+    const isBigNumber = () => {
+        if (monitor2 === "Infinity")
+            return true;
+
+        const number = monitor1
+            .replaceAll(")", "")
+            .split("(")
+            .map(a => a.trim())
+            .filter(a => a.match(/[0-9]/))
+            .filter(a => !a.match(/1\//))[0];
+
+        if (monitor1)
+            if (monitor2 === "0" && number !== "0")
+                return true;
+
+        return false;
+    }
+
     // inactive operators for error
     const handleError: HandleError = (content: string) => {
         if (error !== undefined) {
@@ -138,17 +157,23 @@ export default function CalculatorApp() {
             // remove monitor2 and second number of monitor1
             if (content === "CE") {
                 if (monitor1) {
-                    const operator = monitor1
-                        .split("")
-                        .map(a => a.trim())
-                        .filter(a => a.length > 0)
-                        .filter(a => !a.match(/[0-9]/))[0];
-
                     if (
-                        !monitor1.startsWith("¹∕")
-                        || !monitor1.startsWith("sqr(")
-                    )
+                        monitor1.startsWith("1/")
+                        || monitor1.startsWith("sqr")
+                        || monitor1.startsWith("²√")
+                    ) {
+                        setMonitor1("")
+                    }
+
+                    else {
+                        const operator = monitor1
+                            .split("")
+                            .map(a => a.trim())
+                            .filter(a => a.length > 0)
+                            .filter(a => !a.match(/[0-9]/))[0];
+
                         setMonitor1(monitor1.split(operator)[0] + operator);
+                    }
                 }
 
                 setMonitor2("0");
@@ -174,19 +199,17 @@ export default function CalculatorApp() {
                             // redo the proccess
                             if (monitor1.endsWith("=")) {
                                 const number = monitor1.split(" ")[2]
-                                setMonitor2(
-                                    (+monitor2 + +number)
-                                        .toString()
-                                )
+                                const proccess = (+monitor2 + +number).toString();
+                                setMonitor2(proccess)
+                                setResult(proccess);
 
                                 setMonitor1(monitor2 + " " + operator + " " + number + " =");
                             }
 
                             else {
-                                setMonitor2(
-                                    (+number + +monitor2)
-                                        .toString()
-                                )
+                                const proccess = (+number + +monitor2).toString();
+                                setMonitor2(proccess)
+                                setResult(proccess);
                             }
 
                             break;
@@ -196,19 +219,17 @@ export default function CalculatorApp() {
                             // redo the proccess
                             if (monitor1.endsWith("=")) {
                                 const number = monitor1.split(" ")[2]
-                                setMonitor2(
-                                    (+monitor2 - +number)
-                                        .toString()
-                                )
+                                const proccess = (+monitor2 - +number).toString();
+                                setMonitor2(proccess)
+                                setResult(proccess);
 
                                 setMonitor1(monitor2 + " " + operator + " " + number + " =");
                             }
 
                             else {
-                                setMonitor2(
-                                    (+number - +monitor2)
-                                        .toString()
-                                )
+                                const proccess = (+number - +monitor2).toString();
+                                setMonitor2(proccess)
+                                setResult(proccess);
                             }
 
                             break;
@@ -218,19 +239,17 @@ export default function CalculatorApp() {
                             // redo the proccess
                             if (monitor1.endsWith("=")) {
                                 const number = monitor1.split(" ")[2]
-                                setMonitor2(
-                                    (+monitor2 * +number)
-                                        .toString()
-                                )
+                                const proccess = (+monitor2 * +number).toString();
+                                setMonitor2(proccess)
+                                setResult(proccess);
 
                                 setMonitor1(monitor2 + " " + operator + " " + number + " =");
                             }
 
                             else {
-                                setMonitor2(
-                                    (+number * +monitor2)
-                                        .toString()
-                                )
+                                const proccess = (+number * +monitor2).toString();
+                                setMonitor2(proccess)
+                                setResult(proccess);
                             }
 
                             break;
@@ -244,10 +263,9 @@ export default function CalculatorApp() {
                                     setError("Cannot divide by zero!")
 
                                 else {
-                                    setMonitor2(
-                                        (+monitor2 / +number)
-                                            .toString()
-                                    )
+                                    const proccess = (+monitor2 / +number).toString();
+                                    setMonitor2(proccess)
+                                    setResult(proccess);
 
                                     setMonitor1(monitor2 + " " + operator + " " + number + " =");
                                 }
@@ -257,11 +275,11 @@ export default function CalculatorApp() {
                                 if (monitor2 === "0")
                                     setError("Cannot divide by zero!")
 
-                                else
-                                    setMonitor2(
-                                        (+number / +monitor2)
-                                            .toString()
-                                    )
+                                else {
+                                    const proccess = (+number / +monitor2).toString();
+                                    setMonitor2(proccess)
+                                    setResult(proccess);
+                                }
                             }
 
                             break;
@@ -278,15 +296,28 @@ export default function CalculatorApp() {
                     return;
                 }
 
+                if (isBigNumber()) {
+                    setError("Overflow!")
+
+                    return;
+                }
+
                 return;
             }
 
             // جذر بر 2
             if (content === "²√x") {
                 setMonitor1("²√( " + (monitor1 ? monitor1 : monitor2) + " )")
-                setMonitor2(
-                    ((+monitor2) ** (1 / 2)).toString()
-                )
+
+                const proccess = ((+monitor2) ** (1 / 2)).toString();
+                setMonitor2(proccess)
+                setResult(proccess);
+
+                if (isBigNumber()) {
+                    setError("Overflow!")
+
+                    return;
+                }
 
                 return;
             }
@@ -294,9 +325,16 @@ export default function CalculatorApp() {
             // توان 2 عدد
             if (content === "x²") {
                 setMonitor1("sqr( " + (monitor1 ? monitor1 : monitor2) + " )")
-                setMonitor2(
-                    ((+monitor2) ** 2).toString()
-                )
+
+                const proccess = ((+monitor2) ** 2).toString();
+                setMonitor2(proccess)
+                setResult(proccess);
+
+                if (isBigNumber()) {
+                    setError("Overflow!")
+
+                    return;
+                }
 
                 return;
             }
@@ -308,10 +346,17 @@ export default function CalculatorApp() {
                 if (monitor2 == "0")
                     setError("Cannot divide by zero!")
 
-                else
-                    setMonitor2(
-                        ((1 / +monitor2)).toString()
-                    )
+                else {
+                    const proccess = ((1 / +monitor2)).toString();
+                    setMonitor2(proccess)
+                    setResult(proccess);
+
+                    if (isBigNumber()) {
+                        setError("Overflow!")
+
+                        return;
+                    }
+                }
 
                 return;
             }
@@ -329,12 +374,16 @@ export default function CalculatorApp() {
                     setMonitor2(
                         result
                     )
+                    setResult(
+                        result
+                    )
                     setMonitor1(number + " " + operator + " " + result)
                 }
 
                 else {
                     setMonitor1("0")
                     setMonitor2("0")
+                    setResult("0")
                 }
 
                 return;
@@ -414,8 +463,22 @@ export default function CalculatorApp() {
 
                 // اضافه کردن عدد جدید به عدد قبلی مانیتور2
                 else {
-                    setResult("")
-                    setMonitor2(monitor2 + content);
+                    if (monitor1) {
+                        if (
+                            monitor1.startsWith("1/")
+                            || monitor1.startsWith("sqr")
+                            || monitor1.startsWith("²√")
+                        ) {
+                            setResult("")
+                            setMonitor1("")
+                            setMonitor2(content)
+                        }
+                    }
+
+                    else {
+                        setResult("")
+                        setMonitor2(monitor2 + content);
+                    }
                 }
             }
         }
@@ -434,6 +497,15 @@ export default function CalculatorApp() {
             setError(undefined)
         }
     }, [error])
+
+    useEffect(() => {
+        setResult(monitor2)
+        if (isBigNumber()) {
+            setError("Overflow!")
+
+            return;
+        }
+    }, [monitor2, result])
 
     return (
         <>
